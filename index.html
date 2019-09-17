@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Page Title</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' href='main.css'>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+</head>
+<style>
+    * {
+        margin: 0;
+        padding: 0
+    }
+
+    #container {
+
+        border: 1px solid #ccc;
+        border-bottom: none;
+        border-right: none;
+        position: relative;
+        left: 20%;
+        right: 10%
+    }
+
+    ul {
+        list-style: none;
+
+
+    }
+
+    ul>li {
+
+        border: 1px solid #ccc;
+        border-top: none;
+        border-left: none;
+        float: left
+    }
+
+    #container li {
+        float: right;
+    }
+
+    #snake>div {
+        background-color: #00ff00;
+        position: absolute;
+        left: 0px;
+        top: 0px;
+    }
+</style>
+</head>
+
+<body>
+    hello world
+    <div id='container'>
+        <ul id='uls'>
+
+        </ul>
+        <div id="snake"></div>
+
+    </div>
+
+    １１１１１１１１１
+    <button id='button'>开始游戏</button>
+    <button id='stopButton'>停止游戏</button>
+    <button id="foodcreator">创建食物</button>
+    <script type="text/javascript">
+
+        var container = $id("container"),
+            startedOrNot = false,
+            snakeBody = $tagName(snake, "div")
+        foodcreator = $id("foodcreator")
+        timer = null,
+            stopbtn = $id("stopButton"),
+            uls = $id("uls"),
+            btn = $id("button"),
+            snake = $id("snake"),
+            foodAttribute = {
+                left: 1,
+                top: 1
+            },
+            snakeAttribute = {
+                speed: 500,
+                direction: 39
+            },
+            mapAtrribute = {
+                size: 20, //每个li的像素宽度
+                x: 30, //横向x个
+                y: 30 // 纵向y个
+            }
+
+        //-----------游戏函数库------------//
+
+        function init() {
+            createMap();
+            start();
+            stop();
+            getFood();
+            
+        }
+        function start() {
+            btn.onclick = function () {
+                if (startedOrNot == false) {
+                    createSnake();
+                    moveSnake();
+                    createFood();
+                    snakeChangeDirection();
+                   
+                }
+                else {
+                    moveSnake();
+                    snakeChangeDirection();
+                    
+                }
+            }
+        }
+        function stop() {
+            stopbtn.onclick = function () {
+                stopSnakeMovement();
+                startedOrNot = true
+            }
+        }
+        function getFood() {
+            foodcreator.onclick = function () {
+                createFood();
+            }
+        }
+        function createFood() {
+            var objfood = document.createElement("div");
+            objfood.style.position = "absolute";
+            objfood.style.backgroundColor = "pink";
+            objfood.style.height = objfood.style.width = (mapAtrribute.size + 1) + "px";
+            objfood.className = "food";
+            foodAttribute.left = randomNum(1, mapAtrribute.x - 1) * (mapAtrribute.size + 1);
+            foodAttribute.top = randomNum(1, mapAtrribute.y - 1) * (mapAtrribute.size + 1);
+            objfood.style.left = foodAttribute.left + "px";
+            objfood.style.top = foodAttribute.top + "px";
+            container.appendChild(objfood)
+
+        }
+        function clearFood() {
+            $('.food').remove()
+        }
+
+
+        function snakeGetLongLeft() {
+
+            let objSnakeLastOne = snakeBody[snakeBody.length - 1]
+            let objSnakeAddBody = document.createElement("div")
+            objSnakeAddBody.style.height = objSnakeAddBody.style.width = (mapAtrribute.size) + "px";
+            objSnakeAddBody.style.backgroundColor = "#00ff00"
+            objSnakeAddBody.style.left = snakeBody[snakeBody.length - 1].offsetLeft - (mapAtrribute.size + 1) + "px"
+            objSnakeAddBody.style.top = snakeBody[0].style.top
+            snake.appendChild(objSnakeAddBody)
+        }
+        function foodToSnake() {
+            clearFood();
+            let objSnakeAddBody = document.createElement("div")
+            objSnakeAddBody.style.height = objSnakeAddBody.style.width = (mapAtrribute.size) + "px";
+            objSnakeAddBody.style.backgroundColor = "#00ff00"
+            objSnakeAddBody.style.left = foodAttribute.left + "px"
+            objSnakeAddBody.style.top = foodAttribute.top + "px"
+            snake.appendChild(objSnakeAddBody)
+            createFood();
+
+        }
+        function collisionDetection() {
+            if (snakeBody[0].offsetLeft == foodAttribute.left
+                && snakeBody[0].offsetTop == foodAttribute.top) {
+                foodToSnake();
+            }
+        }
+        function moveSnake() {
+            
+            timer = setInterval(function () {
+                collisionDetection();
+                var snakePositionData = {
+                    left: 0,
+                    top: 0
+                }
+                snakePositionData.left = snakeBody[0].offsetLeft
+                snakePositionData.top = snakeBody[0].offsetTop
+                switch (snakeAttribute.direction) {
+
+                    case 37://left
+
+                        // snakeBody[0].style.left = snakeBody[0].offsetLeft - (mapAtrribute.size + 1) + "px"
+                        if (snakeBody.length > 1) {
+                            for (let i = 0; i < snakeBody.length - 1; i++) {
+                                snakeBody[snakeBody.length - 1 - i].style.left = snakeBody[snakeBody.length - 2 - i].offsetLeft + "px"
+                                snakeBody[snakeBody.length - 1 - i].style.top = snakeBody[snakeBody.length - 2 - i].offsetTop + "px"
+                            }
+                        }
+                        snakeBody[0].style.left = snakeBody[0].offsetLeft - (mapAtrribute.size + 1) + "px"
+                        break;
+                    case 38://up
+                        if (snakeBody.length > 1) {
+                            for (let i = 0; i < snakeBody.length - 1; i++) {
+                                snakeBody[snakeBody.length - 1 - i].style.left = snakeBody[snakeBody.length - 2 - i].offsetLeft + "px"
+                                snakeBody[snakeBody.length - 1 - i].style.top = snakeBody[snakeBody.length - 2 - i].offsetTop + "px"
+                            }
+                        }
+                        snakeBody[0].style.top = snakeBody[0].offsetTop - (mapAtrribute.size + 1) + "px"
+                        break;
+                    case 39://right
+                        if (snakeBody.length > 1) {
+
+                            for (let i = 0; i < snakeBody.length - 1; i++) {
+                                snakeBody[snakeBody.length - 1 - i].style.left = snakeBody[snakeBody.length - 2 - i].offsetLeft + "px"
+                                snakeBody[snakeBody.length - 1 - i].style.top = snakeBody[snakeBody.length - 2 - i].offsetTop + "px"
+                            }
+                        }
+                        snakeBody[0].style.left = snakeBody[0].offsetLeft + (mapAtrribute.size + 1) + "px"
+                        break;
+                    case 40://down
+                        if (snakeBody.length > 1) {
+                            for (let i = 0; i < snakeBody.length - 1; i++) {
+                                snakeBody[snakeBody.length - 1 - i].style.left = snakeBody[snakeBody.length - 2 - i].offsetLeft + "px"
+                                snakeBody[snakeBody.length - 1 - i].style.top = snakeBody[snakeBody.length - 2 - i].offsetTop + "px"
+                            }
+                        }
+                        snakeBody[0].style.top = snakeBody[0].offsetTop + (mapAtrribute.size + 1) + "px"
+                        break;
+
+
+                }
+            }, snakeAttribute.speed)
+        }
+        function stopSnakeMovement() {
+
+            clearInterval(timer);
+        }
+        function snakeChangeDirection() {
+            document.onkeydown = function (e) {
+                var e = window.event || e;
+                switch (event.keyCode) {
+                    case 37:
+                        snakeAttribute.direction = 37
+                        break;
+                    case 38:
+                        snakeAttribute.direction = 38
+                        break;
+                    case 39:
+                        snakeAttribute.direction = 39
+                        break;
+                    case 40:
+                        snakeAttribute.direction = 40
+                        break;
+                }
+            }
+        }
+        function createMap() {
+            container.style.height = container.style.width = (mapAtrribute.size + 1) * mapAtrribute.x + "px"
+
+            for (let i = 0; i < mapAtrribute.x * mapAtrribute.y; i++) {
+                var obj = document.createElement("li")
+                obj.style.width = obj.style.height = mapAtrribute.size + "px"
+                uls.appendChild(obj)
+            }
+        }
+        function createSnake() {
+            var snakeobj = document.createElement("div")
+            snakeobj.style.width = snakeobj.style.height = mapAtrribute.size + "px"
+            snake.appendChild(snakeobj)
+        }
+
+        //-----------函数库------------//
+
+        function randomNum(minNum, maxNum) {
+            switch (arguments.length) {
+                case 1:
+                    return parseInt(Math.random() * minNum + 1, 10);
+                    break;
+                case 2:
+                    return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
+                    break;
+                default:
+                    return 0;
+                    break;
+            }
+        }
+        function $id(id) {
+            return document.getElementById(id)
+        }
+        function $tagName(parent, child) {
+            return parent.getElementsByTagName(child)
+        }
+        //----------入口函数----------//
+        init();
+
+
+    </script>
+</body>
+
+</html>
