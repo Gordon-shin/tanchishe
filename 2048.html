@@ -162,7 +162,7 @@
         function start() {
             $("#startbtn").click(function () {
                 for (let i = 0; i < 2; i++) {
-                    createNewTwoValueCell();
+                    createNewCustomValueCell(2)
                 }
             })
         }
@@ -254,18 +254,19 @@
             for (let i = 0; i < panelAttribute.x * panelAttribute.y; i++) {
                 console.log(i)
                 if (i >= panelAttribute.x * panelAttribute.y - 1) {
-                    console.log("*" + i)
+                    console.log("*" + i) 
                     let UnfilledCells = returnUnfilledCells(arr)
                     for (let j = 0; j < UnfilledCells.length; j++) {
                         console.log("***" + UnfilledCells[j].k);
                         console.log("***" + UnfilledCells[j].j)
-                        createCustomCellGraphic(ntype, UnfilledCells[j].k, UnfilledCells[j].j)
+                        createCustomCellGraphic(ntype, UnfilledCells[j].j, UnfilledCells[j].k)
+                        arr[UnfilledCells[j].k][UnfilledCells[j].j] = ntype;
                     }
 
                 }
                 coordinate = getRandomCoordinate()
 
-                if (judgeCreateNot(coordinate.k, coordinate.j)) {
+                if (judgeCreateNot(coordinate.j, coordinate.k)) {
                     createCustomCellGraphic(ntype, coordinate.k, coordinate.j)
                     arr[coordinate.j][coordinate.k] = ntype;
                     // console.log(coordinate.k+"---------"+coordinate.j)
@@ -336,9 +337,10 @@
         /*向右滑動算法*/
         function cellRightMovementArrange(array) {
             for (let i = 0; i < array.length; i++) {
-                let FirstZero = cellRightFindFirstZero(array[i]),
+                var FirstZero = cellRightFindFirstZero(array[i]),
                     FirstNotZero = cellRightFindFirstNotZero(array[i]);
                 while (firstZero>FirstNotZero) {
+                    array[i] = cellRightMovementSwitch(array[i],FirstZero,FirstNotZero)
                     FirstZero = cellRightFindFirstZero(array[i]),
                     FirstNotZero = cellRightFindFirstNotZero(array[i]);
                 }
@@ -361,7 +363,8 @@
             }
         }
         function cellRightMovementSwitch(array, zero, notZero) {
-
+            array[zero] = array[notZero]
+            array[notZero] =0
             return array
         }
 
