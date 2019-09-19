@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0
+        }
+
+        #container {
+
+            border: 1px solid #ccc;
+            border-bottom: none;
+            border-right: none;
+            position: relative;
+            margin-left: 20%;
+            margin-top: 10%;
+            width: 400px;
+            height: 400px;
+            background-color: #bbada0;
+
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .baseli {
+            background-color: #ccc0b2;
+            margin: 5px;
+            float: right;
+        }
+
+        .n2 {
+            background: #ede6d9;
+            color: #625b4e;
+            font-size: 50px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .n4 {
+            background: #eee1cc;
+            color: #625b4e;
+            font-size: 50px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .n8 {
+            background: #eab678;
+            color: #fff;
+            font-size: 50px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .n16 {
+            background: #e5925b;
+            color: #fff;
+            font-size: 50px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .n32 {
+            background: #ef805e;
+            color: #fff;
+            font-size: 50px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .n64 {
+            background: #e75b37;
+            color: #fff;
+            font-size: 50px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .n128 {
+            background: #edcf70;
+            color: #fff;
+            font-size: 50px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .n256 {
+            background: #ebcd64;
+            color: #fff;
+            font-size: 50px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .n512 {
+            background: #ecc950;
+            color: #fff;
+            font-size: 50px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .n1024 {
+            background: #edc63e;
+            color: #fff;
+            font-size: 40px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .n2048 {
+            background: #f0c52f;
+            color: #fff;
+            font-size: 40px;
+            text-align: center;
+            line-height: 100px;
+        }
+
+        .n4096 {
+            background: #fab912;
+            color: #fff;
+            font-size: 40px;
+            text-align: center;
+            line-height: 100px;
+        }
+    </style>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+
+</head>
+
+<body>
+    <div id="container">
+        <div id="uls">
+
+        </div>
+
+    </div>
+
+    <button id="startbtn">开始游戏</button>
+    <script type="text/javascript">
+        var container = $("#container").get(0),
+            panelAttribute = {
+                size: 100,
+                x: 4,
+                y: 4,
+
+            },
+            arr
+        function init() {
+            start()
+            initialBoxs()
+            createArr(panelAttribute.x, panelAttribute.y)
+        }
+        function start() {
+            $("#startbtn").click(function () {
+                for (let i = 0; i < 2; i++) {
+                    createNewTwoValueCell();
+                }
+            })
+        }
+        function initialBoxs() {
+
+            container.style.height = container.style.width = (panelAttribute.size + 10) * panelAttribute.x + "px"
+            for (let i = 0; i < panelAttribute.x * panelAttribute.y; i++) {
+                var obj = document.createElement("div")
+                obj.style.width = obj.style.height = panelAttribute.size + "px"
+                obj.className = "baseli"
+                uls.appendChild(obj)
+            }
+        }
+        function getRandomCoordinate() {
+            let a, b, c = { k: 0, j: 0 }
+            a = randomNum(0, panelAttribute.x - 1)
+            b = randomNum(0, panelAttribute.y - 1)
+            c.k = a
+            c.j = b
+            return c
+        }
+        function createArr(i, p) {
+            window.arr = new Array();
+            for (var k = 0; k < i; k++) //一维数组长度为i，i为变量，可以根据实际情况改变
+            {
+                window.arr[k] = new Array();
+                for (var j = 0; j < p; j++) //一维数组里面每个元素数组可以包含的数量p，p也是一个变量
+                {
+                    arr[k][j] = 0;    //这里将变量初始化，我这边统一初始化为0
+                }
+            }
+        }
+        function judgeCreateNot(k, j) { //判断能不能创建Cell
+            if (arr[k][j] == 0) {
+                return true
+            }
+            else {
+                return false
+            }
+        }
+        function createCustomCellGraphic(ntype, k, j) {
+            k = k + 1
+            j = j + 1
+            let divobj = document.createElement("div")
+            divobj.style.height = divobj.style.width = panelAttribute.size + "px"
+            divobj.style.position = "absolute"
+            divobj.style.left = (5 + (k - 1) * panelAttribute.size + 10 * (k - 1)) + "px"
+            divobj.style.top = (5 + (j - 1) * panelAttribute.size + 10 * (j - 1)) + "px"
+            divobj.style.zIndex = "10"
+            divobj.className = "n" + ntype
+            divobj.innerHTML = ntype
+            uls.appendChild(divobj)
+        }
+
+        function createTwoCellGraphic(k, j) {
+            k = k + 1
+            j = j + 1
+            let divobj = document.createElement("div")
+            divobj.style.height = divobj.style.width = panelAttribute.size + "px"
+            divobj.style.position = "absolute"
+            divobj.style.left = (5 + (k - 1) * panelAttribute.size + 10 * (k - 1)) + "px"
+            divobj.style.top = (5 + (j - 1) * panelAttribute.size + 10 * (j - 1)) + "px"
+            divobj.style.zIndex = "10"
+            divobj.className = "n2"
+            uls.appendChild(divobj)
+        }
+        function returnUnfilledCells(arr) {
+            var UnfilledCells = new Array();
+            //查询未初始化的格子
+            for (let i = 0; i < panelAttribute.x; i++) //一维数组长度为i，i为变量，可以根据实际情况改变
+            {
+                for (let j = 0; j < panelAttribute.y; j++) //一维数组里面每个元素数组可以包含的数量p，p也是一个变量
+                {
+                    let count = 0
+                    if (arr[i][j] == 0) {
+                        let newJson = {}
+                        newJson.k = i
+                        newJson.j = j
+                        UnfilledCells.push(newJson)
+                        count++
+                    }
+                }
+            }
+            return UnfilledCells
+        }
+        function createNewCustomValueCell(ntype) {//关键创建2值函数
+            var coordinate
+
+            for (let i = 0; i < panelAttribute.x * panelAttribute.y; i++) {
+                console.log(i)
+                if (i >= panelAttribute.x * panelAttribute.y - 1) {
+                    console.log("*" + i)
+                    let UnfilledCells = returnUnfilledCells(arr)
+                    for (let j = 0; j < UnfilledCells.length; j++) {
+                        console.log("***" + UnfilledCells[j].k);
+                        console.log("***" + UnfilledCells[j].j)
+                        createCustomCellGraphic(ntype, UnfilledCells[j].k, UnfilledCells[j].j)
+                    }
+
+                }
+                coordinate = getRandomCoordinate()
+
+                if (judgeCreateNot(coordinate.k, coordinate.j)) {
+                    createCustomCellGraphic(ntype, coordinate.k, coordinate.j)
+                    arr[coordinate.j][coordinate.k] = ntype;
+                    // console.log(coordinate.k+"---------"+coordinate.j)
+                    break;
+                }
+            }
+        }
+        function createNewTwoValueCell() {//关键创建2值函数
+            var coordinate
+
+            for (let i = 0; i < panelAttribute.x * panelAttribute.y; i++) {
+                console.log(i)
+                if (i >= panelAttribute.x * panelAttribute.y - 1) {
+                    console.log("*" + i)
+                    let UnfilledCells = returnUnfilledCells(arr)
+                    for (let j = 0; j < UnfilledCells.length; j++) {
+                        console.log("***" + UnfilledCells[j].k);
+                        console.log("***" + UnfilledCells[j].j)
+                        createTwoCellGraphic(UnfilledCells[j].k, UnfilledCells[j].j)
+                    }
+
+                }
+                coordinate = getRandomCoordinate()
+
+                if (judgeCreateNot(coordinate.k, coordinate.j)) {
+                    createTwoCellGraphic(coordinate.k, coordinate.j)
+                    arr[coordinate.j][coordinate.k] = 2;
+                    // console.log(coordinate.k+"---------"+coordinate.j)
+                    break;
+                }
+            }
+
+
+        }
+        //----------方块移动算法---------------//
+        function cellRightMovement(array) {
+            console.log("------------before")
+            console.log(arr)
+            for (let i = 0; i < array.length; i++) {
+                let firstZero, firstNotZero
+                /*for (let z = array[i].length - 1; z >= 0; z--) {
+                    for (let j = array[i].length - 1; j >= 0; j--) {
+                        if (array[i][j] == 0) {
+                            firstZero = j;
+                            break;
+                        }
+                    }
+                    if (array[i][z] != 0 && z < firstZero) {
+                        firstNotZero = z;
+                        break;
+                    }
+                }*/
+                let distance = firstZero - firstNotZero
+                // console.log(distance,isNaN(distance))
+
+                for (let x = firstNotZero; x >= 0; x--) {
+                    array[i][x + distance] = array[i][x]
+                    array[i][x] = 0
+
+                }
+
+
+            }
+            console.log("------------after")
+            console.log(arr)
+
+        }
+        /*向右滑動算法*/
+        function cellRightMovementArrange(array) {
+            for (let i = 0; i < array.length; i++) {
+                let FirstZero = cellRightFindFirstZero(array[i]),
+                    FirstNotZero = cellRightFindFirstNotZero(array[i]);
+                while (firstZero>FirstNotZero) {
+                    FirstZero = cellRightFindFirstZero(array[i]),
+                    FirstNotZero = cellRightFindFirstNotZero(array[i]);
+                }
+
+            }
+
+        }
+        function cellRightFindFirstZero(array) {
+            for (let i = array.length - 1; i >= 0; i--) {
+                if (array[i] == 0) {
+                    return i;
+                }
+            }
+        }
+        function cellRightFindFirstNotZero(array) {
+            for (let i = array.length - 1; i >= 0; i--) {
+                if (array[i] != 0) {
+                    return i;
+                }
+            }
+        }
+        function cellRightMovementSwitch(array, zero, notZero) {
+
+            return array
+        }
+
+        /*向右滑動算法*/
+
+        //-------------函数库------------------//
+        function randomNum(minNum, maxNum) {
+            switch (arguments.length) {
+                case 1:
+                    return parseInt(Math.random() * minNum + 1, 10);
+                    break;
+                case 2:
+                    return parseInt(Math.random() * (maxNum - minNum + 1) + minNum, 10);
+                    break;
+                default:
+                    return 0;
+                    break;
+            }
+        }
+        //----------------------------------//
+        init()
+    </script>
+</body>
+
+</html>
